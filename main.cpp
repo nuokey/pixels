@@ -27,6 +27,11 @@ int main()
     sf::Text text(font, "", 20);
     text.setFillColor(sf::Color::White);
 
+    ColourBar greenBar("Green", sf::Color::Green, 255, 0, 100, 300, 20, font, sf::Color::Green);
+    ColourBar blueBar("Blue", sf::Color::Green, 255, 0, 150, 300, 20, font, sf::Color::Blue);
+    ColourBar redBar("Red", sf::Color::Green, 255, 0, 200, 300, 20, font, sf::Color::Red);
+    
+
     Camera camera;
     
 
@@ -160,6 +165,14 @@ int main()
         text.setString("Player: " + std::to_string(static_cast<int>(player.x)) + ", " + std::to_string(static_cast<int>(player.y)) + "\n" + 
             "Camera: " + std::to_string(static_cast<int>(camera.x)) + ", " + std::to_string(static_cast<int>(camera.y)));
         window.draw(text);
+
+        greenBar.setValue(player.green);
+        redBar.setValue(player.red);
+        blueBar.setValue(player.blue);
+
+        greenBar.draw(window);
+        redBar.draw(window);
+        blueBar.draw(window);
 
         window.display();
     }
