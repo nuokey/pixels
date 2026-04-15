@@ -62,7 +62,7 @@ int main()
     //     //     randInt(0, 255)));
     // }
 
-    Player player{1000, 1000, 10, 255, 255};
+    Player player{1000, 1000, 255, 255, 255};
     std::cout << &player << std::endl;
 
 
