@@ -148,12 +148,11 @@ int main()
             for (int i = 0; i < pixels.size(); i++) {
                 if (std::fabs(pixels[i].x - particles[z].x) < (pixels[i].size + particles[z].size) / 2 && std::fabs(pixels[i].y - particles[z].y) < (pixels[i].size + particles[z].size) / 2) {
                     pixels[i].blue -= 10;
-                    pixels[i].red -= 10;
-                    pixels[i].green -= 10;
                     particles.erase(particles.begin() + z);
                     if (pixels[i].red < 0 && pixels[i].green < 0 && pixels[i].blue < 0) {
                         pixels.erase(pixels.begin() + i);
                     }
+                    break;
                 }
             }
         }
