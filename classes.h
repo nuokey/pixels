@@ -113,7 +113,7 @@ class Player: public Pixel {
     }
 };
 
-class Particle {
+class Projectile {
     public:
     float x;
     float y;
@@ -123,7 +123,7 @@ class Particle {
     sf::Color color;
     sf::RectangleShape rect;
 
-    Particle(float x, float y, float vx, float vy, sf::Color color) {
+    Projectile(float x, float y, float vx, float vy, sf::Color color) {
         this->x = x;
         this->y = y;
         this->vx = vx;
@@ -139,6 +139,41 @@ class Particle {
         x += vx * dt;
         y += vy * dt;
         rect.setPosition(sf::Vector2f(x-camera.x-size/2, y-camera.y-size/2));
+    }
+
+};
+
+
+class Particle {
+    public:
+    float x;
+    float y;
+    float vx;
+    float vy;
+    int size;
+    int ttl;
+    sf::Color color;
+    sf::RectangleShape rect;
+    
+
+    Particle(float x, float y, float vx, float vy, sf::Color color, int ttl) {
+        this->x = x;
+        this->y = y;
+        this->vx = vx;
+        this->vy = vy;
+        this->color = color;
+        this->ttl = ttl;
+        size = 5;
+        rect.setSize(sf::Vector2f(size, size));
+        rect.setFillColor(color);
+        rect.setPosition(sf::Vector2f(x, y));
+        rect.setOutlineThickness(0);
+    }
+    void update(float dt, Camera camera) {
+        x += vx * dt;
+        y += vy * dt;
+        rect.setPosition(sf::Vector2f(x-camera.x-size/2, y-camera.y-size/2));
+        ttl--;
     }
 
 };
@@ -211,11 +246,11 @@ private:
     float moveSpeed;
     float a;
 public:
-    Component(float x, float y, float red, float green, float blue) : Pixel(x, y, red, green, blue) {
+    Component(float x, float y, float vx, float vy, float red, float green, float blue) : Pixel(x, y, red, green, blue) {
         moveSpeed = 0.1;
-        a = 0.01;
-        vx = 0.01;
-        vy = 0.01;
+        a = 0.1;
+        this->vx = vx;
+        this->vy = vy;
         this->size = 10;
         rect.setSize(sf::Vector2f(size, size));
     }
@@ -228,17 +263,21 @@ public:
         float n1 = rx / r;
         float n2 = ry / r;
 
-        x += n1 * vx;
-        y += n2 * vy;
+        vx += n1 * a / r;
+        vy += n2 * a / r;
+    }
+    void friction() {
+        vx *= 0.9;
+        vy *= 0.9;
+    }
+    void update(float dt, Camera camera, Player player) {
+        moveToPlayer(player);
+        friction();
+        x += vx * dt;
+        y += vy * dt;
+        rect.setPosition(sf::Vector2f(x-camera.x-size/2, y-camera.y-size/2));
     }
 };
-
-
-
-
-
-
-
 
 // Функции для вирусов
 // 1) реализация
@@ -318,16 +357,16 @@ public:
 
 
 // 5) ещё какая-то тема, хз что это
-#include <unordered_set>
+// #include <unordered_set>
 
-struct PairHash {
-    template <class T1, class T2>
-    std::size_t operator() (const std::pair<T1,T2>& p) const {
-        auto h1 = std::hash<T1>{}(p.first);
-        auto h2 = std::hash<T2>{}(p.second);
-        return h1 ^ (h2 << 1);
-    }
-};
+// struct PairHash {
+//     template <class T1, class T2>
+//     std::size_t operator() (const std::pair<T1,T2>& p) const {
+//         auto h1 = std::hash<T1>{}(p.first);
+//         auto h2 = std::hash<T2>{}(p.second);
+//         return h1 ^ (h2 << 1);
+//     }
+// };
 
 // Вирусная система
 // std::unordered_set<std::pair<float,float>, PairHash> virusSet;
