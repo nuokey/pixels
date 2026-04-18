@@ -38,8 +38,9 @@ int main()
     
 
     std::vector<Pixel> pixels;
-    std::vector<Particle> particles;
+    std::vector<Projectile> projectiles;
     std::vector<Component> components;
+    std::vector<Particle> particles;
 
     // pixels.push_back(Pixel(300, 300, 100, 0, 0));
 
@@ -97,7 +98,7 @@ int main()
                 float v = 1;
 
 
-                particles.push_back(Particle(player.x, player.y, nx * v, ny * v, sf::Color::Red));
+                projectiles.push_back(Projectile(player.x, player.y, nx * v, ny * v, sf::Color::Red));
                 // std::cout << "Fireball!!! " << nx * v << ny * v << std::endl;
                 player.red -= 1;
             }
@@ -108,6 +109,7 @@ int main()
         dt = dt * 0.001;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
             player.moveRight(dt);
+            // particles.push_back(Particle(player.x, player.y, 0, 0, sf::Color(player.red, player.green, player.blue), 1000));
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
             player.moveLeft(dt);
@@ -145,7 +147,7 @@ int main()
                 }
             }
         }
-        for (int z = 0; z < particles.size(); z++) {
+        for (int z = 0; z < projectiles.size(); z++) {
 // Обновление и сбор капель-лута
 // for (size_t d = 0; d < drops.size(); ) {
 //     drops[d].update(dt, camera);
@@ -166,19 +168,19 @@ int main()
 //         ++d;
 //     }
 // }
-            particles[z].update(dt, camera);
-            window.draw(particles[z].rect);
+            projectiles[z].update(dt, camera);
+            window.draw(projectiles[z].rect);
             for (int i = 0; i < pixels.size(); i++) {
-                if (std::fabs(pixels[i].x - particles[z].x) < (pixels[i].size + particles[z].size) / 2 && std::fabs(pixels[i].y - particles[z].y) < (pixels[i].size + particles[z].size) / 2) {
+                if (std::fabs(pixels[i].x - projectiles[z].x) < (pixels[i].size + projectiles[z].size) / 2 && std::fabs(pixels[i].y - projectiles[z].y) < (pixels[i].size + projectiles[z].size) / 2) {
                     pixels[i].blue -= 10;
-                    particles.erase(particles.begin() + z);
+                    projectiles.erase(projectiles.begin() + z);
                     if (pixels[i].blue < 0) {
                         // Сохраняем цвета удаляемого пикселя
                         int capturedGreen = pixels[i].green / 5;
                         int capturedRed   = pixels[i].red / 5;
 
-                        components.push_back(Component(pixels[i].x + randInt(-5, 5), pixels[i].y + randInt(-5, 5), capturedRed, 0, 0));
-                        components.push_back(Component(pixels[i].x + randInt(-5, 5), pixels[i].y + randInt(-5, 5), 0, capturedGreen, 0));
+                        components.push_back(Component(pixels[i].x + randInt(-5, 5), pixels[i].y + randInt(-5, 5), randInt(-100, 100)*0.001, randInt(-100, 100)*0.001, capturedRed, 0, 0));
+                        components.push_back(Component(pixels[i].x + randInt(-5, 5), pixels[i].y + randInt(-5, 5), randInt(-100, 100)*0.001, randInt(-100, 100)*0.001, 0, capturedGreen, 0));
                         
 
                         // Создаём 3 капли
@@ -203,7 +205,7 @@ int main()
             }
         }
         for (int i = 0; i < components.size(); i++) {
-            components[i].update(camera);
+            components[i].update(dt, camera, player);
             window.draw(components[i].rect);
 
             // Collision updating
@@ -214,6 +216,10 @@ int main()
                 components.erase(components.begin() + i);
                 break;
             }
+        }
+        for (int i = 0; i < particles.size(); i++) {
+            particles[i].update(dt, camera);
+            window.draw(particles[i].rect);
         }
         player.update(dt, camera);
         camera.x = player.x-WINDOW_WIDTH/2 + 500; // тут происходит какая-то дичь с камерой, надо будет доработать
