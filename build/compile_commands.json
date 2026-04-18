@@ -1,8 +1,0 @@
-[
-{
-  "directory": "/Users/nuokey/projects/pixels/build",
-  "command": "/usr/bin/clang++  -isystem /opt/homebrew/include -g -std=gnu++17 -arch arm64 -o CMakeFiles/main.dir/main.cpp.o -c /Users/nuokey/projects/pixels/main.cpp",
-  "file": "/Users/nuokey/projects/pixels/main.cpp",
-  "output": "CMakeFiles/main.dir/main.cpp.o"
-}
-]
