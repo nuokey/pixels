@@ -4,9 +4,39 @@
 #include <random>
 #include <chrono>
 #include <iostream>
-
+#include <cmath>
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 int PixelSize = 50;
+struct Drop {
+    float x, y;
+    float vx, vy;
+    int green, red;
+    float size = 10.f;
+    sf::RectangleShape rect;
+    float lifespan = 10.0f;   // время жизни 10 секунд
+    float life = 0.f;
+    
+    Drop(float x, float y, float vx, float vy, int green, int red)
+        : x(x), y(y), vx(vx), vy(vy), green(green), red(red)
+    {
+        rect.setSize(sf::Vector2f(size, size));
+        rect.setFillColor(sf::Color(green, red, 0));
+        rect.setOrigin(size/2, size/2);
+        rect.setPosition(x, y);
+    }
+    
+    void update(float dt, const Camera& camera) {
+        x += vx * dt;
+        y += vy * dt;
+        life += dt;
+        rect.setPosition(x - camera.x, y - camera.y);
+    }
+    
+    bool isAlive() const { return life < lifespan; }
+};
 
 int randInt(int min, int max) {
     int x = rand() % (max - min + 1) + min;
@@ -37,6 +67,7 @@ int main()
 
     std::vector<Pixel> pixels;
     std::vector<Particle> particles;
+    std::vector<Drop> drops;
 
     // pixels.push_back(Pixel(300, 300, 100, 0, 0));
 
@@ -143,6 +174,26 @@ int main()
             }
         }
         for (int z = 0; z < particles.size(); z++) {
+// Обновление и сбор капель-лута
+for (size_t d = 0; d < drops.size(); ) {
+    drops[d].update(dt, camera);
+    window.draw(drops[d].rect);
+    
+    // Проверка столкновения с игроком
+    if (std::fabs(drops[d].x - player.x) < (player.size + drops[d].size) / 2 &&
+        std::fabs(drops[d].y - player.y) < (player.size + drops[d].size) / 2)
+    {
+        player.green = std::min(255, player.green + drops[d].green);
+        player.red   = std::min(255, player.red   + drops[d].red);
+        drops.erase(drops.begin() + d);
+    }
+    else if (!drops[d].isAlive()) {
+        drops.erase(drops.begin() + d);
+    }
+    else {
+        ++d;
+    }
+}
             particles[z].update(dt, camera);
             window.draw(particles[z].rect);
             for (int i = 0; i < pixels.size(); i++) {
@@ -150,8 +201,27 @@ int main()
                     pixels[i].blue -= 10;
                     particles.erase(particles.begin() + z);
                     if (pixels[i].red < 0 && pixels[i].green < 0 && pixels[i].blue < 0) {
-                        pixels.erase(pixels.begin() + i);
-                    }
+    // Сохраняем цвета удаляемого пикселя
+    int capturedGreen = pixels[i].green;
+    int capturedRed   = pixels[i].red;
+    
+    // Создаём 3 капли
+    for (int d = 0; d < 3; ++d) {
+        float angle = randInt(0, 360) * M_PI / 180.f;
+        float speed = randInt(50, 150);   // пикселей в секунду
+        float vx = std::cos(angle) * speed;
+        float vy = std::sin(angle) * speed;
+        
+        int dropGreen = capturedGreen / 3;
+        int dropRed   = capturedRed / 3;
+        if (d == 2) { // последняя капля забирает остаток
+            dropGreen = capturedGreen - dropGreen * 2;
+            dropRed   = capturedRed   - dropRed * 2;
+        }
+        drops.emplace_back(pixels[i].x, pixels[i].y, vx, vy, dropGreen, dropRed);
+    }
+    pixels.erase(pixels.begin() + i);
+}
                     break;
                 }
             }
