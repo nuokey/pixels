@@ -5,38 +5,10 @@
 #include <chrono>
 #include <iostream>
 #include <cmath>
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
+
 
 int PixelSize = 50;
-struct Drop {
-    float x, y;
-    float vx, vy;
-    int green, red;
-    float size = 10.f;
-    sf::RectangleShape rect;
-    float lifespan = 10.0f;   // время жизни 10 секунд
-    float life = 0.f;
-    
-    Drop(float x, float y, float vx, float vy, int green, int red)
-        : x(x), y(y), vx(vx), vy(vy), green(green), red(red)
-    {
-        rect.setSize(sf::Vector2f(size, size));
-        rect.setFillColor(sf::Color(green, red, 0));
-        rect.setOrigin(size/2, size/2);
-        rect.setPosition(x, y);
-    }
-    
-    void update(float dt, const Camera& camera) {
-        x += vx * dt;
-        y += vy * dt;
-        life += dt;
-        rect.setPosition(x - camera.x, y - camera.y);
-    }
-    
-    bool isAlive() const { return life < lifespan; }
-};
+
 
 int randInt(int min, int max) {
     int x = rand() % (max - min + 1) + min;
@@ -50,7 +22,7 @@ int main()
     sf::Clock clock;
 
     sf::Font font;
-    if (!font.openFromFile("fonts/VMVSegaGenesis-Regular.otf")) { // Укажите путь к шрифту
+    if (!font.openFromFile("../fonts/VMVSegaGenesis-Regular.otf")) { // Укажите путь к шрифту
         return -1; // Ошибка загрузки
     }
 
@@ -67,7 +39,7 @@ int main()
 
     std::vector<Pixel> pixels;
     std::vector<Particle> particles;
-    std::vector<Drop> drops;
+    std::vector<Component> components;
 
     // pixels.push_back(Pixel(300, 300, 100, 0, 0));
 
@@ -83,11 +55,11 @@ int main()
         for (int y = 0; y < 100; y++) {
             if (randInt(0, 100) < 50) {
                 pixels.push_back(Pixel(x*PixelSize, y*PixelSize, randInt(0, 255), randInt(0, 255), randInt(0, 255)));
-                std::cout << &pixels[pixels.size()-1] << std::endl;
+                // std::cout << &pixels[pixels.size()-1] << std::endl;
             }
         }
     }
-    std::cout << std::endl << std::endl;
+    // std::cout << std::endl << std::endl;
 
     // for (int z = 0; z < 1; z++) {
     //     // pixels.push_back(Pixel(
@@ -98,8 +70,8 @@ int main()
     //     //     randInt(0, 255)));
     // }
 
-    Player player{1000, 1000, 255, 255, 255};
-    std::cout << &player << std::endl;
+    Player player{1000, 1000, static_cast<float>(randInt(50, 100)), static_cast<float>(randInt(50, 100)), static_cast<float>(randInt(50, 100))};
+    // std::cout << &player << std::endl;
 
 
 
@@ -175,60 +147,77 @@ int main()
         }
         for (int z = 0; z < particles.size(); z++) {
 // Обновление и сбор капель-лута
-for (size_t d = 0; d < drops.size(); ) {
-    drops[d].update(dt, camera);
-    window.draw(drops[d].rect);
+// for (size_t d = 0; d < drops.size(); ) {
+//     drops[d].update(dt, camera);
+//     window.draw(drops[d].rect);
     
-    // Проверка столкновения с игроком
-    if (std::fabs(drops[d].x - player.x) < (player.size + drops[d].size) / 2 &&
-        std::fabs(drops[d].y - player.y) < (player.size + drops[d].size) / 2)
-    {
-        player.green = std::min(255, player.green + drops[d].green);
-        player.red   = std::min(255, player.red   + drops[d].red);
-        drops.erase(drops.begin() + d);
-    }
-    else if (!drops[d].isAlive()) {
-        drops.erase(drops.begin() + d);
-    }
-    else {
-        ++d;
-    }
-}
+//     // Проверка столкновения с игроком
+//     if (std::fabs(drops[d].x - player.x) < (player.size + drops[d].size) / 2 &&
+//         std::fabs(drops[d].y - player.y) < (player.size + drops[d].size) / 2)
+//     {
+//         player.green = std::min(255, player.green + drops[d].green);
+//         player.red   = std::min(255, player.red   + drops[d].red);
+//         drops.erase(drops.begin() + d);
+//     }
+//     else if (!drops[d].isAlive()) {
+//         drops.erase(drops.begin() + d);
+//     }
+//     else {
+//         ++d;
+//     }
+// }
             particles[z].update(dt, camera);
             window.draw(particles[z].rect);
             for (int i = 0; i < pixels.size(); i++) {
                 if (std::fabs(pixels[i].x - particles[z].x) < (pixels[i].size + particles[z].size) / 2 && std::fabs(pixels[i].y - particles[z].y) < (pixels[i].size + particles[z].size) / 2) {
                     pixels[i].blue -= 10;
                     particles.erase(particles.begin() + z);
-                    if (pixels[i].red < 0 && pixels[i].green < 0 && pixels[i].blue < 0) {
-    // Сохраняем цвета удаляемого пикселя
-    int capturedGreen = pixels[i].green;
-    int capturedRed   = pixels[i].red;
-    
-    // Создаём 3 капли
-    for (int d = 0; d < 3; ++d) {
-        float angle = randInt(0, 360) * M_PI / 180.f;
-        float speed = randInt(50, 150);   // пикселей в секунду
-        float vx = std::cos(angle) * speed;
-        float vy = std::sin(angle) * speed;
-        
-        int dropGreen = capturedGreen / 3;
-        int dropRed   = capturedRed / 3;
-        if (d == 2) { // последняя капля забирает остаток
-            dropGreen = capturedGreen - dropGreen * 2;
-            dropRed   = capturedRed   - dropRed * 2;
-        }
-        drops.emplace_back(pixels[i].x, pixels[i].y, vx, vy, dropGreen, dropRed);
-    }
-    pixels.erase(pixels.begin() + i);
-}
+                    if (pixels[i].blue < 0) {
+                        // Сохраняем цвета удаляемого пикселя
+                        int capturedGreen = pixels[i].green / 5;
+                        int capturedRed   = pixels[i].red / 5;
+
+                        components.push_back(Component(pixels[i].x + randInt(-5, 5), pixels[i].y + randInt(-5, 5), capturedRed, 0, 0));
+                        components.push_back(Component(pixels[i].x + randInt(-5, 5), pixels[i].y + randInt(-5, 5), 0, capturedGreen, 0));
+                        
+
+                        // Создаём 3 капли
+                        // for (int d = 0; d < 3; ++d) {
+                        //     float angle = randInt(0, 360) * M_PI / 180.f;
+                        //     float speed = randInt(50, 150);   // пикселей в секунду
+                        //     float vx = std::cos(angle) * speed;
+                        //     float vy = std::sin(angle) * speed;
+                            
+                        //     int dropGreen = capturedGreen / 3;
+                        //     int dropRed   = capturedRed / 3;
+                        //     if (d == 2) { // последняя капля забирает остаток
+                        //         dropGreen = capturedGreen - dropGreen * 2;
+                        //         dropRed   = capturedRed   - dropRed * 2;
+                        //     }
+                        //     // drops.emplace_back(pixels[i].x, pixels[i].y, vx, vy, dropGreen, dropRed);
+                        // }
+                        pixels.erase(pixels.begin() + i);
+                        }
                     break;
                 }
             }
         }
+        for (int i = 0; i < components.size(); i++) {
+            components[i].update(camera);
+            window.draw(components[i].rect);
+
+            // Collision updating
+            if (std::fabs(components[i].x - player.x) < (components[i].size + player.size) / 2 && std::fabs(components[i].y - player.y) < (components[i].size + player.size) / 2) {
+                if (player.red + components[i].red <= 255) {player.red += components[i].red;}
+                if (player.green + components[i].green <= 255) {player.green += components[i].green;}
+                if (player.blue + components[i].blue <= 255) {player.blue += components[i].blue;}
+                components.erase(components.begin() + i);
+                break;
+            }
+        }
         player.update(dt, camera);
-        camera.x = player.x-WINDOW_WIDTH/2;
-        camera.y = player.y-WINDOW_HEIGHT/2;
+        camera.x = player.x-WINDOW_WIDTH/2 + 500; // тут происходит какая-то дичь с камерой, надо будет доработать
+        camera.y = player.y-WINDOW_HEIGHT/2 + 400; // тут тоже
 
         window.draw(player.rect);
         text.setString("Player: " + std::to_string(static_cast<int>(player.x)) + ", " + std::to_string(static_cast<int>(player.y)) + "\n" + 
