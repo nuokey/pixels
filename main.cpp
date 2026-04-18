@@ -4,9 +4,11 @@
 #include <random>
 #include <chrono>
 #include <iostream>
+#include <cmath>
 
 
 int PixelSize = 50;
+
 
 int randInt(int min, int max) {
     int x = rand() % (max - min + 1) + min;
@@ -20,18 +22,24 @@ int main()
     sf::Clock clock;
 
     sf::Font font;
-    if (!font.openFromFile("fonts/VMVSegaGenesis-Regular.otf")) { // Укажите путь к шрифту
+    if (!font.openFromFile("../fonts/VMVSegaGenesis-Regular.otf")) { // Укажите путь к шрифту
         return -1; // Ошибка загрузки
     }
 
     sf::Text text(font, "", 20);
     text.setFillColor(sf::Color::White);
 
+    ColourBar greenBar("Green", sf::Color::Green, 255, 0, 100, 300, 20, font, sf::Color::Green);
+    ColourBar blueBar("Blue", sf::Color::Green, 255, 0, 150, 300, 20, font, sf::Color::Blue);
+    ColourBar redBar("Red", sf::Color::Green, 255, 0, 200, 300, 20, font, sf::Color::Red);
+    
+
     Camera camera;
     
 
     std::vector<Pixel> pixels;
     std::vector<Particle> particles;
+    std::vector<Component> components;
 
     // pixels.push_back(Pixel(300, 300, 100, 0, 0));
 
@@ -47,11 +55,11 @@ int main()
         for (int y = 0; y < 100; y++) {
             if (randInt(0, 100) < 50) {
                 pixels.push_back(Pixel(x*PixelSize, y*PixelSize, randInt(0, 255), randInt(0, 255), randInt(0, 255)));
-                std::cout << &pixels[pixels.size()-1] << std::endl;
+                // std::cout << &pixels[pixels.size()-1] << std::endl;
             }
         }
     }
-    std::cout << std::endl << std::endl;
+    // std::cout << std::endl << std::endl;
 
     // for (int z = 0; z < 1; z++) {
     //     // pixels.push_back(Pixel(
@@ -62,8 +70,8 @@ int main()
     //     //     randInt(0, 255)));
     // }
 
-    Player player{1000, 1000, 255, 255, 255};
-    std::cout << &player << std::endl;
+    Player player{1000, 1000, static_cast<float>(randInt(50, 100)), static_cast<float>(randInt(50, 100)), static_cast<float>(randInt(50, 100))};
+    // std::cout << &player << std::endl;
 
 
 
@@ -138,28 +146,91 @@ int main()
             }
         }
         for (int z = 0; z < particles.size(); z++) {
+// Обновление и сбор капель-лута
+// for (size_t d = 0; d < drops.size(); ) {
+//     drops[d].update(dt, camera);
+//     window.draw(drops[d].rect);
+    
+//     // Проверка столкновения с игроком
+//     if (std::fabs(drops[d].x - player.x) < (player.size + drops[d].size) / 2 &&
+//         std::fabs(drops[d].y - player.y) < (player.size + drops[d].size) / 2)
+//     {
+//         player.green = std::min(255, player.green + drops[d].green);
+//         player.red   = std::min(255, player.red   + drops[d].red);
+//         drops.erase(drops.begin() + d);
+//     }
+//     else if (!drops[d].isAlive()) {
+//         drops.erase(drops.begin() + d);
+//     }
+//     else {
+//         ++d;
+//     }
+// }
             particles[z].update(dt, camera);
             window.draw(particles[z].rect);
             for (int i = 0; i < pixels.size(); i++) {
                 if (std::fabs(pixels[i].x - particles[z].x) < (pixels[i].size + particles[z].size) / 2 && std::fabs(pixels[i].y - particles[z].y) < (pixels[i].size + particles[z].size) / 2) {
                     pixels[i].blue -= 10;
-                    pixels[i].red -= 10;
-                    pixels[i].green -= 10;
                     particles.erase(particles.begin() + z);
-                    if (pixels[i].red < 0 && pixels[i].green < 0 && pixels[i].blue < 0) {
+                    if (pixels[i].blue < 0) {
+                        // Сохраняем цвета удаляемого пикселя
+                        int capturedGreen = pixels[i].green / 5;
+                        int capturedRed   = pixels[i].red / 5;
+
+                        components.push_back(Component(pixels[i].x + randInt(-5, 5), pixels[i].y + randInt(-5, 5), capturedRed, 0, 0));
+                        components.push_back(Component(pixels[i].x + randInt(-5, 5), pixels[i].y + randInt(-5, 5), 0, capturedGreen, 0));
+                        
+
+                        // Создаём 3 капли
+                        // for (int d = 0; d < 3; ++d) {
+                        //     float angle = randInt(0, 360) * M_PI / 180.f;
+                        //     float speed = randInt(50, 150);   // пикселей в секунду
+                        //     float vx = std::cos(angle) * speed;
+                        //     float vy = std::sin(angle) * speed;
+                            
+                        //     int dropGreen = capturedGreen / 3;
+                        //     int dropRed   = capturedRed / 3;
+                        //     if (d == 2) { // последняя капля забирает остаток
+                        //         dropGreen = capturedGreen - dropGreen * 2;
+                        //         dropRed   = capturedRed   - dropRed * 2;
+                        //     }
+                        //     // drops.emplace_back(pixels[i].x, pixels[i].y, vx, vy, dropGreen, dropRed);
+                        // }
                         pixels.erase(pixels.begin() + i);
-                    }
+                        }
+                    break;
                 }
             }
         }
+        for (int i = 0; i < components.size(); i++) {
+            components[i].update(camera);
+            window.draw(components[i].rect);
+
+            // Collision updating
+            if (std::fabs(components[i].x - player.x) < (components[i].size + player.size) / 2 && std::fabs(components[i].y - player.y) < (components[i].size + player.size) / 2) {
+                if (player.red + components[i].red <= 255) {player.red += components[i].red;}
+                if (player.green + components[i].green <= 255) {player.green += components[i].green;}
+                if (player.blue + components[i].blue <= 255) {player.blue += components[i].blue;}
+                components.erase(components.begin() + i);
+                break;
+            }
+        }
         player.update(dt, camera);
-        camera.x = player.x-WINDOW_WIDTH/2;
-        camera.y = player.y-WINDOW_HEIGHT/2;
+        camera.x = player.x-WINDOW_WIDTH/2 + 500; // тут происходит какая-то дичь с камерой, надо будет доработать
+        camera.y = player.y-WINDOW_HEIGHT/2 + 400; // тут тоже
 
         window.draw(player.rect);
         text.setString("Player: " + std::to_string(static_cast<int>(player.x)) + ", " + std::to_string(static_cast<int>(player.y)) + "\n" + 
             "Camera: " + std::to_string(static_cast<int>(camera.x)) + ", " + std::to_string(static_cast<int>(camera.y)));
         window.draw(text);
+
+        greenBar.setValue(player.green);
+        redBar.setValue(player.red);
+        blueBar.setValue(player.blue);
+
+        greenBar.draw(window);
+        redBar.draw(window);
+        blueBar.draw(window);
 
         window.display();
     }
