@@ -16,4 +16,29 @@ Pixels — это простая 2D-игра на C++ с элементами «
 1.  **Клонируйте репозиторий:**
     ```bash
     git clone https://github.com/nuokey/pixels
+
+1.  **Вписать в терминал следующие команды:**
+    ```bash
+    cd pixels
+    ```
+    ```bash
+    mkdir build
+    ```
+    ```bash
+     cd build
+    ```
+     ```bash
+     cmake ..
+     ```
+     ```bash
+     cmake --build
+    ```
+## Структура проекта
+main.cpp - основная программа
+Папка include - заголовки классов
+Папка SRC - тела классов
+classes.h - глобальные переменные
+CMakeList.txt - сборка всего проекта
+
+
     
