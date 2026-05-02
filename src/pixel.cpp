@@ -1,13 +1,13 @@
 #include "pixel.hpp"
 #include "camera.hpp"
 
-Pixel::Pixel(float x, float y, float red, float green, float blue) {
-    this->x = x;
-    this->y = y;
-    this->red = red;
-    this->green = green;
-    this->blue = blue;
-    this->size = 50;
+Pixel::Pixel(float x_, float y_, float red_, float green_, float blue_) {
+    x = x_;
+    y = y_;
+    red = red;
+    green = green_;
+    blue = blue_;
+    size = 50;
     
     rect.setSize(sf::Vector2f(size, size));
     rect.setFillColor(sf::Color(red, green, blue));

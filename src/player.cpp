@@ -6,7 +6,7 @@ Player::Player(float x, float y, float red, float green, float blue) : Pixel(x, 
     a = 0.01;
     vx = 0;
     vy = 0;
-    this->size = 40;
+    size = 40;
     rect.setSize(sf::Vector2f(size, size));
 }
 

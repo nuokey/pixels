@@ -1,11 +1,11 @@
 #include "component.hpp"
 
-Component::Component(float x, float y, float vx, float vy, float red, float green, float blue) : Pixel(x, y, red, green, blue) {
+Component::Component(float x, float y, float vx_, float vy_, float red, float green, float blue) : Pixel(x, y, red, green, blue) {
     moveSpeed = 0.1;
     a = 0.1;
-    this->vx = vx;
-    this->vy = vy;
-    this->size = 10;
+    vx = vx_;
+    vy = vy_;
+    size = 10;
     rect.setSize(sf::Vector2f(size, size));
 }
 void Component::moveToPlayer(Player player) {
