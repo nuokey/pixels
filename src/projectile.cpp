@@ -1,11 +1,11 @@
 #include "projectile.hpp"
 
-Projectile::Projectile(float x, float y, float vx, float vy, sf::Color color) {
-    this->x = x;
-    this->y = y;
-    this->vx = vx;
-    this->vy = vy;
-    this->color = color;
+Projectile::Projectile(float x_, float y_, float vx_, float vy_, sf::Color color_) {
+    x = x_;
+    y = y_;
+    vx = vx_;
+    vy = vy_;
+    color = color_;
     size = 10;
     rect.setSize(sf::Vector2f(size, size));
     rect.setFillColor(color);

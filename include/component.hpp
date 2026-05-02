@@ -11,7 +11,7 @@ private:
     float moveSpeed;
     float a;
 public:
-    Component(float x, float y, float vx, float vy, float red, float green, float blue);
+    Component(float x, float y, float vx_, float vy_, float red, float green, float blue);
     void moveToPlayer(Player player);
     void friction();
     void update(float dt, Camera camera, Player player);

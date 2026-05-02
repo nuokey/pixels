@@ -1,12 +1,12 @@
 #include "particle.hpp"
 
-Particle::Particle(float x, float y, float vx, float vy, sf::Color color, int ttl) {
-    this->x = x;
-    this->y = y;
-    this->vx = vx;
-    this->vy = vy;
-    this->color = color;
-    this->ttl = ttl;
+Particle::Particle(float x_, float y_, float vx_, float vy_, sf::Color color_, int ttl_) {
+    x = x_;
+    y = y_;
+    vx = vx_;
+    vy = vy_;
+    color = color_;
+    ttl = ttl_;
     size = 5;
     rect.setSize(sf::Vector2f(size, size));
     rect.setFillColor(color);
