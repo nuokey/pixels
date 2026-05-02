@@ -38,13 +38,8 @@ int main()
     std::vector<Component> components;
     std::vector<Particle> particles;
 
-    for (int x = 0; x < 100; x++) {
-        for (int y = 0; y < 100; y++) {
-            if (randInt(0, 100) < 50) {
-                pixels.push_back(Pixel(x*PixelSize, y*PixelSize, randInt(0, 255), randInt(0, 255), randInt(0, 255)));
-            }
-        }
-    }
+
+    pixels = gameManager.worldGeneration(100, 100, PixelSize);
     Player player{1000, 1000, static_cast<float>(randInt(50, 100)), static_cast<float>(randInt(50, 100)), static_cast<float>(randInt(50, 100))};
     
 
