@@ -4,11 +4,12 @@
 
 #include "colourbar.hpp"
 #include "camera.hpp"
+// #include "pixel.hpp"
 
 class GameManager {
     public:
     sf::Font font;
     Camera camera;
     GameManager(std::string importFont);
-    void worldGeneration(int worldSizeX, int worldSizeY);
+    // std::vector<Pixel> worldGeneration(int worldSizeX, int worldSizeY);
 };

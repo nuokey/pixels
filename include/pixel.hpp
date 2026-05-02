@@ -13,6 +13,6 @@ class Pixel {
     float y;
     float size;
     sf::RectangleShape rect;
-    Pixel(float x, float y, float red, float green, float blue);
+    Pixel(float x_, float y_, float red_, float green_, float blue_);
     void update(Camera camera);
 };

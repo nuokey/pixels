@@ -1,7 +1,6 @@
 #pragma once
 
-class Camera {
-    public:
+struct Camera {
     int x;
     int y;
     Camera() {
