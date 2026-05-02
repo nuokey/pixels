@@ -4,7 +4,7 @@
 Pixel::Pixel(float x_, float y_, float red_, float green_, float blue_) {
     x = x_;
     y = y_;
-    red = red;
+    red = red_;
     green = green_;
     blue = blue_;
     size = 50;
