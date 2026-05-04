@@ -79,8 +79,6 @@ int main()
         for (int i = 0; i < pixels.size(); i++) {
             pixels[i].update(gameManager.camera);
             window.draw(pixels[i].rect);
-
-            // Collision updating
             player.collision(pixels[i]);
         }
         for (int z = 0; z < projectiles.size(); z++) {
