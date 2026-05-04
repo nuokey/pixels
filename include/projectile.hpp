@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 #include "camera.hpp"
+// #include "pixel.hpp" 
+// #include "component.hpp"
 
 
 class Projectile {
