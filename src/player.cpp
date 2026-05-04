@@ -35,6 +35,24 @@ void Player::friction() {
     vx *= 0.9;
     vy *= 0.9;
 }
+
+void Player::collision(Pixel pixel) {
+    if (std::fabs(pixel.x - x) < (pixel.size + size) / 2 && std::fabs(pixel.y - y) < (pixel.size + size) / 2) {
+        if (pixel.x - x > 0 && std::fabs(pixel.y - y) < std::fabs(pixel.x - x)) {
+            x -= 1;
+        }
+        if (pixel.x - x < 0 && std::fabs(pixel.y - y) < std::fabs(pixel.x - x)) {
+            x += 1;
+        }
+        if (pixel.y - y < 0 && std::fabs(pixel.y - y) > std::fabs(pixel.x - x)) {
+            y += 1;
+        }
+        if (pixel.y - y > 0 && std::fabs(pixel.y - y) > std::fabs(pixel.x - x)) {
+            y -= 1;
+        }
+    }
+}
+
 void Player::fire(std::vector<Projectile>* projectiles_, float mouseX, float mouseY) {
     float rx = mouseX - x;
     float ry = mouseY - y;

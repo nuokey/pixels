@@ -19,7 +19,7 @@ class Player: public Pixel {
     void moveDown(float dt);
     void moveUp(float dt);
     void friction();
-    void collision();
+    void collision(Pixel pixel);
     void fire(std::vector<Projectile>* projectiles, float mouseX, float mouseY);
     void update(float dt, Camera camera);
 };
