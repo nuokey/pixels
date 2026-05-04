@@ -21,7 +21,7 @@ int main()
     std::srand(time(0));
     sf::RenderWindow window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "Pixels");
     sf::Clock clock;
-
+    
     GameManager gameManager("../fonts/VMVSegaGenesis-Regular.otf");
 
     // sf::Text text(font, "", 20);
@@ -49,22 +49,14 @@ int main()
                 window.close();
             }
             if (const auto* mousePressed = event->getIf<sf::Event::MouseButtonPressed>()) {
-            if (mousePressed->button == sf::Mouse::Button::Left && player.red > 0) {
-                float mouseX = sf::Mouse::getPosition(window).x+gameManager.camera.x;
-                float mouseY = sf::Mouse::getPosition(window).y+gameManager.camera.y;
+                if (mousePressed->button == sf::Mouse::Button::Left && player.red > 0) {
+                    float mouseX = sf::Mouse::getPosition(window).x+gameManager.camera.x;
+                    float mouseY = sf::Mouse::getPosition(window).y+gameManager.camera.y;
 
-                float rx = mouseX - player.x;
-                float ry = mouseY - player.y;
-                float r = sqrt(rx*rx + ry*ry);
-                float nx = rx / r;
-                float ny = ry / r;
-                float v = 1;
-
-
-                projectiles.push_back(Projectile(player.x, player.y, nx * v, ny * v, sf::Color::Red));
-                player.red -= 1;
+                    player.fire(&projectiles, mouseX, mouseY);
+                    std::cout << projectiles.size() << std::endl;
+                }
             }
-        }
         }
         float dt = clock.getElapsedTime().asMicroseconds();
         clock.restart();

@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "pixel.hpp"
 #include "camera.hpp"
+#include "projectile.hpp"
 
 class Player: public Pixel {
     private:
@@ -19,5 +20,6 @@ class Player: public Pixel {
     void moveUp(float dt);
     void friction();
     void collision();
+    void fire(std::vector<Projectile>* projectiles, float mouseX, float mouseY);
     void update(float dt, Camera camera);
 };

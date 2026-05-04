@@ -35,6 +35,19 @@ void Player::friction() {
     vx *= 0.9;
     vy *= 0.9;
 }
+void Player::fire(std::vector<Projectile>* projectiles_, float mouseX, float mouseY) {
+    float rx = mouseX - x;
+    float ry = mouseY - y;
+    float r = sqrt(rx*rx + ry*ry);
+    float nx = rx / r;
+    float ny = ry / r;
+    float v = 1;
+
+    projectiles_->push_back(Projectile(x, y, nx * v, ny * v, sf::Color::Red));
+    
+    red -= 1;
+}
+
 
 // void Player::collision(int ) {
 
