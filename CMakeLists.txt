@@ -10,7 +10,7 @@ find_package(SFML 3 REQUIRED COMPONENTS Graphics Window System)
 file(GLOB SOURCES "src/*.cpp")
 file(GLOB HEADERS "include/*.hpp")
 
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} main.cpp)
+add_executable(${PROJECT_NAME} ${SOURCES} main.cpp)
 
 target_include_directories(${PROJECT_NAME} PRIVATE include)
 

@@ -35,6 +35,10 @@ void Player::friction() {
     vx *= 0.9;
     vy *= 0.9;
 }
+
+// void Player::collision(int ) {
+
+// }
 void Player::update(float dt, Camera camera) {
     x += vx * dt;
     y += vy * dt;

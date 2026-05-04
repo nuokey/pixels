@@ -30,19 +30,15 @@ int main()
     ColourBar greenBar("Green", sf::Color::Green, 255, 0, 100, 300, 20, gameManager.font, sf::Color::Green);
     ColourBar blueBar("Blue", sf::Color::Green, 255, 0, 150, 300, 20, gameManager.font, sf::Color::Blue);
     ColourBar redBar("Red", sf::Color::Green, 255, 0, 200, 300, 20, gameManager.font, sf::Color::Red);
-    
-    // Camera camera;
-
+ 
     std::vector<Pixel> pixels;
     std::vector<Projectile> projectiles;
     std::vector<Component> components;
     std::vector<Particle> particles;
 
-
     pixels = gameManager.worldGeneration(100, 100, PixelSize);
     Player player{1000, 1000, static_cast<float>(randInt(50, 100)), static_cast<float>(randInt(50, 100)), static_cast<float>(randInt(50, 100))};
     
-
     // text.setPosition(sf::Vector2f(camera.x, camera.y));
     
     while (window.isOpen())
@@ -66,7 +62,6 @@ int main()
 
 
                 projectiles.push_back(Projectile(player.x, player.y, nx * v, ny * v, sf::Color::Red));
-                // std::cout << "Fireball!!! " << nx * v << ny * v << std::endl;
                 player.red -= 1;
             }
         }
