@@ -9,6 +9,7 @@ class Player: public Pixel {
     private:
     float moveSpeed;
     float a;
+    float damage;
 
     public:
     float vx;

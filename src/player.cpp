@@ -7,6 +7,7 @@ Player::Player(float x, float y, float red, float green, float blue) : Pixel(x, 
     vx = 0;
     vy = 0;
     size = 40;
+    damage = 10;
     rect.setSize(sf::Vector2f(size, size));
 }
 
@@ -61,7 +62,7 @@ void Player::fire(std::vector<Projectile>* projectiles_, float mouseX, float mou
     float ny = ry / r;
     float v = 1;
 
-    projectiles_->push_back(Projectile(x, y, nx * v, ny * v, sf::Color::Red));
+    projectiles_->push_back(Projectile(x, y, nx * v, ny * v, sf::Color::Red, damage));
     
     red -= 1;
 }
