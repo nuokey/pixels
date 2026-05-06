@@ -77,7 +77,7 @@ int main()
         
 
         for (int i = 0; i < pixels.size(); i++) {
-            pixels[i].update(gameManager.camera);
+            pixels[i].update(gameManager.camera, &pixels, &projectiles, &components);
             window.draw(pixels[i].rect);
             player.collision(pixels[i]);
         }
@@ -88,14 +88,7 @@ int main()
                 if (std::fabs(pixels[i].x - projectiles[z].x) < (pixels[i].size + projectiles[z].size) / 2 && std::fabs(pixels[i].y - projectiles[z].y) < (pixels[i].size + projectiles[z].size) / 2) {
                     projectiles[z].hit(&pixels[i], &projectiles, z);
                     if (pixels[i].blue < 0) {
-                        // Сохраняем цвета удаляемого пикселя
-                        int capturedGreen = pixels[i].green / 5;
-                        int capturedRed   = pixels[i].red / 5;
-
-                        components.push_back(Component(pixels[i].x + randInt(-5, 5), pixels[i].y + randInt(-5, 5), randInt(-100, 100)*0.001, randInt(-100, 100)*0.001, capturedRed, 0, 0));
-                        components.push_back(Component(pixels[i].x + randInt(-5, 5), pixels[i].y + randInt(-5, 5), randInt(-100, 100)*0.001, randInt(-100, 100)*0.001, 0, capturedGreen, 0));
                         
-                        pixels.erase(pixels.begin() + i);
                         }
                     break;
                 }

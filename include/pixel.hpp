@@ -3,6 +3,9 @@
 #include <string>
 #include <iostream>
 #include "camera.hpp"
+#include "component.hpp"
+#include "projectile.hpp"
+
 
 class Pixel {
     public:
