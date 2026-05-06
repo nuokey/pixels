@@ -21,7 +21,7 @@ int main()
     std::srand(time(0));
     sf::RenderWindow window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "Pixels");
     sf::Clock clock;
-
+    
     GameManager gameManager("../fonts/VMVSegaGenesis-Regular.otf");
 
     // sf::Text text(font, "", 20);
@@ -30,24 +30,15 @@ int main()
     ColourBar greenBar("Green", sf::Color::Green, 255, 0, 100, 300, 20, gameManager.font, sf::Color::Green);
     ColourBar blueBar("Blue", sf::Color::Green, 255, 0, 150, 300, 20, gameManager.font, sf::Color::Blue);
     ColourBar redBar("Red", sf::Color::Green, 255, 0, 200, 300, 20, gameManager.font, sf::Color::Red);
-    
-    // Camera camera;
-
+ 
     std::vector<Pixel> pixels;
     std::vector<Projectile> projectiles;
     std::vector<Component> components;
     std::vector<Particle> particles;
 
-    for (int x = 0; x < 100; x++) {
-        for (int y = 0; y < 100; y++) {
-            if (randInt(0, 100) < 50) {
-                pixels.push_back(Pixel(x*PixelSize, y*PixelSize, randInt(0, 255), randInt(0, 255), randInt(0, 255)));
-            }
-        }
-    }
+    pixels = gameManager.worldGeneration(100, 100, PixelSize);
     Player player{1000, 1000, static_cast<float>(randInt(50, 100)), static_cast<float>(randInt(50, 100)), static_cast<float>(randInt(50, 100))};
     
-
     // text.setPosition(sf::Vector2f(camera.x, camera.y));
     
     while (window.isOpen())
@@ -58,23 +49,14 @@ int main()
                 window.close();
             }
             if (const auto* mousePressed = event->getIf<sf::Event::MouseButtonPressed>()) {
-            if (mousePressed->button == sf::Mouse::Button::Left && player.red > 0) {
-                float mouseX = sf::Mouse::getPosition(window).x+gameManager.camera.x;
-                float mouseY = sf::Mouse::getPosition(window).y+gameManager.camera.y;
+                if (mousePressed->button == sf::Mouse::Button::Left && player.red > 0) {
+                    float mouseX = sf::Mouse::getPosition(window).x+gameManager.camera.x;
+                    float mouseY = sf::Mouse::getPosition(window).y+gameManager.camera.y;
 
-                float rx = mouseX - player.x;
-                float ry = mouseY - player.y;
-                float r = sqrt(rx*rx + ry*ry);
-                float nx = rx / r;
-                float ny = ry / r;
-                float v = 1;
-
-
-                projectiles.push_back(Projectile(player.x, player.y, nx * v, ny * v, sf::Color::Red));
-                // std::cout << "Fireball!!! " << nx * v << ny * v << std::endl;
-                player.red -= 1;
+                    player.fire(&projectiles, mouseX, mouseY);
+                    std::cout << projectiles.size() << std::endl;
+                }
             }
-        }
         }
         float dt = clock.getElapsedTime().asMicroseconds();
         clock.restart();
@@ -97,22 +79,7 @@ int main()
         for (int i = 0; i < pixels.size(); i++) {
             pixels[i].update(gameManager.camera);
             window.draw(pixels[i].rect);
-
-            // Collision updating
-            if (std::fabs(pixels[i].x - player.x) < (pixels[i].size + player.size) / 2 && std::fabs(pixels[i].y - player.y) < (pixels[i].size + player.size) / 2) {
-                if (pixels[i].x - player.x > 0 && std::fabs(pixels[i].y - player.y) < std::fabs(pixels[i].x - player.x)) {
-                    player.x -= 1;
-                }
-                if (pixels[i].x - player.x < 0 && std::fabs(pixels[i].y - player.y) < std::fabs(pixels[i].x - player.x)) {
-                    player.x += 1;
-                }
-                if (pixels[i].y - player.y < 0 && std::fabs(pixels[i].y - player.y) > std::fabs(pixels[i].x - player.x)) {
-                    player.y += 1;
-                }
-                if (pixels[i].y - player.y > 0 && std::fabs(pixels[i].y - player.y) > std::fabs(pixels[i].x - player.x)) {
-                    player.y -= 1;
-                }
-            }
+            player.collision(pixels[i]);
         }
         for (int z = 0; z < projectiles.size(); z++) {
             projectiles[z].update(dt, gameManager.camera);
