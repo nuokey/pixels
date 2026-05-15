@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cmath>
 
+#include "classes.h"
 #include "pixel.hpp"
 #include "player.hpp"
 #include "camera.hpp"
@@ -14,7 +15,6 @@
 #include "particle.hpp"
 #include "gamemanager.hpp"
 
-#include "classes.h"
 
 int main()
 {

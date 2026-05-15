@@ -1,6 +1,6 @@
 #include "gamemanager.hpp"
 #include "pixel.hpp"
-#include "../classes.h"
+#include "classes.h"
 
 
 GameManager::GameManager(std::string importFont) {

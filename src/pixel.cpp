@@ -1,8 +1,6 @@
 #include "pixel.hpp"
 #include "camera.hpp"
-#include "projectile.hpp"
-#include "../classes.hpp"
-
+#include "classes.hpp"
 Pixel::Pixel(float x_, float y_, float red_, float green_, float blue_) {
     x = x_;
     y = y_;

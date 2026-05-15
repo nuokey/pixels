@@ -3,9 +3,8 @@
 #include <string>
 #include <iostream>
 #include "camera.hpp"
-#include "component.hpp"
 #include "projectile.hpp"
-
+#include "component.hpp"
 
 class Pixel {
     public:
@@ -17,5 +16,5 @@ class Pixel {
     float size;
     sf::RectangleShape rect;
     Pixel(float x_, float y_, float red_, float green_, float blue_);
-    void update(Camera camera);
+    void update(Camera camera, std::vector<Pixel>* pixels, std::vector<Projectile>* projectiles, std::vector<Component>* components, int i);
 };
