@@ -87,9 +87,6 @@ int main()
             for (int i = 0; i < pixels.size(); i++) {
                 if (std::fabs(pixels[i].x - projectiles[z].x) < (pixels[i].size + projectiles[z].size) / 2 && std::fabs(pixels[i].y - projectiles[z].y) < (pixels[i].size + projectiles[z].size) / 2) {
                     projectiles[z].hit(&pixels[i], &projectiles, z);
-                    if (pixels[i].blue < 0) {
-                        
-                        }
                     break;
                 }
             }
