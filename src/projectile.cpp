@@ -1,19 +1,30 @@
 #include "projectile.hpp"
+#include "pixel.hpp"  // ← ДОБАВИТЬ - полное определение Pixel
+// #include "classes.h"
 
-Projectile::Projectile(float x_, float y_, float vx_, float vy_, sf::Color color_) {
+Projectile::Projectile(float x_, float y_, float vx_, float vy_, sf::Color color_, float damage_) {
     x = x_;
     y = y_;
     vx = vx_;
     vy = vy_;
     color = color_;
+    damage = damage_;
     size = 10;
     rect.setSize(sf::Vector2f(size, size));
     rect.setFillColor(color);
     rect.setPosition(sf::Vector2f(x, y));
     rect.setOutlineThickness(0);
 }
+
 void Projectile::update(float dt, Camera camera) {
     x += vx * dt;
     y += vy * dt;
-    rect.setPosition(sf::Vector2f(x-camera.x-size/2, y-camera.y-size/2));
+    rect.setPosition(sf::Vector2f(x - camera.x - size/2, y - camera.y - size/2));
+}
+
+void Projectile::hit(Pixel* pixel, std::vector<Projectile>* projectiles, int z) {
+    if (pixel->green != 0 && pixel->red != 0) {
+        pixel->blue -= damage;
+        projectiles->erase(projectiles->begin() + z);
+    }
 }

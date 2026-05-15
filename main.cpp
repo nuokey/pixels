@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cmath>
 
+#include "classes.h"
 #include "pixel.hpp"
 #include "player.hpp"
 #include "camera.hpp"
@@ -14,14 +15,13 @@
 #include "particle.hpp"
 #include "gamemanager.hpp"
 
-#include "classes.h"
 
 int main()
 {
     std::srand(time(0));
     sf::RenderWindow window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "Pixels");
     sf::Clock clock;
-
+    
     GameManager gameManager("../fonts/VMVSegaGenesis-Regular.otf");
 
     // sf::Text text(font, "", 20);
@@ -30,24 +30,15 @@ int main()
     ColourBar greenBar("Green", sf::Color::Green, 255, 0, 100, 300, 20, gameManager.font, sf::Color::Green);
     ColourBar blueBar("Blue", sf::Color::Green, 255, 0, 150, 300, 20, gameManager.font, sf::Color::Blue);
     ColourBar redBar("Red", sf::Color::Green, 255, 0, 200, 300, 20, gameManager.font, sf::Color::Red);
-    
-    // Camera camera;
-
-    std::vector<Pixel> pixels;
+ 
+    std::vector<std::vector<Pixel>> pixels;
     std::vector<Projectile> projectiles;
     std::vector<Component> components;
     std::vector<Particle> particles;
 
-    for (int x = 0; x < 100; x++) {
-        for (int y = 0; y < 100; y++) {
-            if (randInt(0, 100) < 50) {
-                pixels.push_back(Pixel(x*PixelSize, y*PixelSize, randInt(0, 255), randInt(0, 255), randInt(0, 255)));
-            }
-        }
-    }
+    pixels = gameManager.worldGeneration(100, 100, PixelSize);
     Player player{1000, 1000, static_cast<float>(randInt(50, 100)), static_cast<float>(randInt(50, 100)), static_cast<float>(randInt(50, 100))};
     
-
     // text.setPosition(sf::Vector2f(camera.x, camera.y));
     
     while (window.isOpen())
@@ -58,23 +49,14 @@ int main()
                 window.close();
             }
             if (const auto* mousePressed = event->getIf<sf::Event::MouseButtonPressed>()) {
-            if (mousePressed->button == sf::Mouse::Button::Left && player.red > 0) {
-                float mouseX = sf::Mouse::getPosition(window).x+gameManager.camera.x;
-                float mouseY = sf::Mouse::getPosition(window).y+gameManager.camera.y;
+                if (mousePressed->button == sf::Mouse::Button::Left && player.red > 0) {
+                    float mouseX = sf::Mouse::getPosition(window).x+gameManager.camera.x;
+                    float mouseY = sf::Mouse::getPosition(window).y+gameManager.camera.y;
 
-                float rx = mouseX - player.x;
-                float ry = mouseY - player.y;
-                float r = sqrt(rx*rx + ry*ry);
-                float nx = rx / r;
-                float ny = ry / r;
-                float v = 1;
-
-
-                projectiles.push_back(Projectile(player.x, player.y, nx * v, ny * v, sf::Color::Red));
-                // std::cout << "Fireball!!! " << nx * v << ny * v << std::endl;
-                player.red -= 1;
+                    player.fire(&projectiles, mouseX, mouseY);
+                    // std::cout << projectiles.size() << std::endl;
+                }
             }
-        }
         }
         float dt = clock.getElapsedTime().asMicroseconds();
         clock.restart();
@@ -94,44 +76,34 @@ int main()
         window.clear();
         
 
-        for (int i = 0; i < pixels.size(); i++) {
-            pixels[i].update(gameManager.camera);
-            window.draw(pixels[i].rect);
-
-            // Collision updating
-            if (std::fabs(pixels[i].x - player.x) < (pixels[i].size + player.size) / 2 && std::fabs(pixels[i].y - player.y) < (pixels[i].size + player.size) / 2) {
-                if (pixels[i].x - player.x > 0 && std::fabs(pixels[i].y - player.y) < std::fabs(pixels[i].x - player.x)) {
-                    player.x -= 1;
-                }
-                if (pixels[i].x - player.x < 0 && std::fabs(pixels[i].y - player.y) < std::fabs(pixels[i].x - player.x)) {
-                    player.x += 1;
-                }
-                if (pixels[i].y - player.y < 0 && std::fabs(pixels[i].y - player.y) > std::fabs(pixels[i].x - player.x)) {
-                    player.y += 1;
-                }
-                if (pixels[i].y - player.y > 0 && std::fabs(pixels[i].y - player.y) > std::fabs(pixels[i].x - player.x)) {
-                    player.y -= 1;
-                }
+//        for (int i = 0; i < pixels.size(); i++) {
+//            pixels[i].update(gameManager.camera, &pixels, &projectiles, &components, i);
+//            window.draw(pixels[i].rect);
+//            player.collision(pixels[i]);
+//            for (int z = 0; z < pixels.size(); z++) {
+//                if (std::fabs(pixels[i].x - pixels[z].x) < (pixels[i].size + pixels[z].size) / 2 && std::fabs(pixels[i].y - pixels[z].y) < (pixels[i].size + pixels[z].size) / 2) {
+//                    if (pixels[i].green == 255) {
+//                        //std::cout << "fasdfsa" << std::endl;
+//                    }
+//                }
+//            }
+//        }
+        for (int x = 0; x < pixels.size(); x++) {
+            for (int y = 0; y < pixels[x].size(); y++) {
+                pixels[x][y].update(gameManager.camera, &pixels, &projectiles, &components, x, y);
+                window.draw(pixels[x][y].rect);
+                player.collision(pixels[x][y]);
             }
         }
         for (int z = 0; z < projectiles.size(); z++) {
             projectiles[z].update(dt, gameManager.camera);
             window.draw(projectiles[z].rect);
-            for (int i = 0; i < pixels.size(); i++) {
-                if (std::fabs(pixels[i].x - projectiles[z].x) < (pixels[i].size + projectiles[z].size) / 2 && std::fabs(pixels[i].y - projectiles[z].y) < (pixels[i].size + projectiles[z].size) / 2) {
-                    pixels[i].blue -= 10;
-                    projectiles.erase(projectiles.begin() + z);
-                    if (pixels[i].blue < 0) {
-                        // Сохраняем цвета удаляемого пикселя
-                        int capturedGreen = pixels[i].green / 5;
-                        int capturedRed   = pixels[i].red / 5;
-
-                        components.push_back(Component(pixels[i].x + randInt(-5, 5), pixels[i].y + randInt(-5, 5), randInt(-100, 100)*0.001, randInt(-100, 100)*0.001, capturedRed, 0, 0));
-                        components.push_back(Component(pixels[i].x + randInt(-5, 5), pixels[i].y + randInt(-5, 5), randInt(-100, 100)*0.001, randInt(-100, 100)*0.001, 0, capturedGreen, 0));
-                        
-                        pixels.erase(pixels.begin() + i);
-                        }
-                    break;
+            for (int x = 0; x < pixels.size(); x++) {
+                for (int y = 0; y < pixels[x].size(); y++) {
+                    if (std::fabs(pixels[x][y].x - projectiles[z].x) < (pixels[x][y].size + projectiles[z].size) / 2 && std::fabs(pixels[x][y].y - projectiles[z].y) < (pixels[x][y].size + projectiles[z].size) / 2) {
+                        projectiles[z].hit(&pixels[x][y], &projectiles, z);
+                        break;
+                    }
                 }
             }
         }
