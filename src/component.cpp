@@ -1,4 +1,6 @@
 #include "component.hpp"
+#include "player.hpp"  // ← добавить для полного определения Player
+#include <cmath>
 
 Component::Component(float x, float y, float vx_, float vy_, float red, float green, float blue) : Pixel(x, y, red, green, blue) {
     moveSpeed = 0.1;

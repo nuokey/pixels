@@ -1,10 +1,11 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <vector>
 #include "camera.hpp"
-#include "pixel.hpp" 
-// #include "component.hpp"
 
+// Forward declaration (достаточно для указателя)
+class Pixel;
 
 class Projectile {
     public:

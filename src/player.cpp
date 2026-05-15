@@ -1,5 +1,7 @@
 #include "player.hpp"
 #include "camera.hpp"
+#include "projectile.hpp"  // ← добавить для полного определения Projectile
+#include <cmath>
 
 Player::Player(float x, float y, float red, float green, float blue) : Pixel(x, y, red, green, blue) {
     moveSpeed = 0.1;
