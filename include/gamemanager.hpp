@@ -11,5 +11,5 @@ class GameManager {
     sf::Font font;
     Camera camera;
     GameManager(std::string importFont);
-    std::vector<Pixel> worldGeneration(int worldSizeX, int worldSizeY, int PixelSize);
+    std::vector<std::vector<Pixel>> worldGeneration(int worldSizeX, int worldSizeY, int PixelSize);
 };

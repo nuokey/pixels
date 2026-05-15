@@ -2,17 +2,21 @@
 
 #include <SFML/Graphics.hpp>
 #include "pixel.hpp"
-#include "camera.hpp"
-#include "projectile.hpp"
+
+// Forward declarations
+class Camera;
+class Projectile;
 
 class Player: public Pixel {
     private:
     float moveSpeed;
     float a;
+    float damage;
 
     public:
     float vx;
     float vy;
+    
     Player(float x, float y, float red, float green, float blue);
     void moveRight(float dt);
     void moveLeft(float dt);
