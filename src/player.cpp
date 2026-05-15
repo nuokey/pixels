@@ -40,7 +40,7 @@ void Player::friction() {
 }
 
 void Player::collision(Pixel pixel) {
-    if (std::fabs(pixel.x - x) < (pixel.size + size) / 2 && std::fabs(pixel.y - y) < (pixel.size + size) / 2) {
+    if (std::fabs(pixel.x - x) < (pixel.size + size) / 2 && std::fabs(pixel.y - y) < (pixel.size + size) / 2 && pixel.red != 0 && pixel.green != 0 && pixel.blue != 0) {
         if (pixel.x - x > 0 && std::fabs(pixel.y - y) < std::fabs(pixel.x - x)) {
             x -= 1;
         }

@@ -23,6 +23,8 @@ void Projectile::update(float dt, Camera camera) {
 }
 
 void Projectile::hit(Pixel* pixel, std::vector<Projectile>* projectiles, int z) {
-    pixel->blue -= damage;  // Теперь компилятор знает, что у Pixel есть поле blue
-    projectiles->erase(projectiles->begin() + z);
+    if (pixel->green != 0 && pixel->red != 0) {
+        pixel->blue -= damage;
+        projectiles->erase(projectiles->begin() + z);
+    }
 }

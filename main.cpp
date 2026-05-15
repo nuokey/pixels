@@ -31,7 +31,7 @@ int main()
     ColourBar blueBar("Blue", sf::Color::Green, 255, 0, 150, 300, 20, gameManager.font, sf::Color::Blue);
     ColourBar redBar("Red", sf::Color::Green, 255, 0, 200, 300, 20, gameManager.font, sf::Color::Red);
  
-    std::vector<Pixel> pixels;
+    std::vector<std::vector<Pixel>> pixels;
     std::vector<Projectile> projectiles;
     std::vector<Component> components;
     std::vector<Particle> particles;
@@ -76,18 +76,34 @@ int main()
         window.clear();
         
 
-        for (int i = 0; i < pixels.size(); i++) {
-            pixels[i].update(gameManager.camera, &pixels, &projectiles, &components, i);
-            window.draw(pixels[i].rect);
-            player.collision(pixels[i]);
+//        for (int i = 0; i < pixels.size(); i++) {
+//            pixels[i].update(gameManager.camera, &pixels, &projectiles, &components, i);
+//            window.draw(pixels[i].rect);
+//            player.collision(pixels[i]);
+//            for (int z = 0; z < pixels.size(); z++) {
+//                if (std::fabs(pixels[i].x - pixels[z].x) < (pixels[i].size + pixels[z].size) / 2 && std::fabs(pixels[i].y - pixels[z].y) < (pixels[i].size + pixels[z].size) / 2) {
+//                    if (pixels[i].green == 255) {
+//                        //std::cout << "fasdfsa" << std::endl;
+//                    }
+//                }
+//            }
+//        }
+        for (int x = 0; x < pixels.size(); x++) {
+            for (int y = 0; y < pixels[x].size(); y++) {
+                pixels[x][y].update(gameManager.camera, &projectiles, &components, x, y);
+                window.draw(pixels[x][y].rect);
+                player.collision(pixels[x][y]);
+            }
         }
         for (int z = 0; z < projectiles.size(); z++) {
             projectiles[z].update(dt, gameManager.camera);
             window.draw(projectiles[z].rect);
-            for (int i = 0; i < pixels.size(); i++) {
-                if (std::fabs(pixels[i].x - projectiles[z].x) < (pixels[i].size + projectiles[z].size) / 2 && std::fabs(pixels[i].y - projectiles[z].y) < (pixels[i].size + projectiles[z].size) / 2) {
-                    projectiles[z].hit(&pixels[i], &projectiles, z);
-                    break;
+            for (int x = 0; x < pixels.size(); x++) {
+                for (int y = 0; y < pixels[x].size(); y++) {
+                    if (std::fabs(pixels[x][y].x - projectiles[z].x) < (pixels[x][y].size + projectiles[z].size) / 2 && std::fabs(pixels[x][y].y - projectiles[z].y) < (pixels[x][y].size + projectiles[z].size) / 2) {
+                        projectiles[z].hit(&pixels[x][y], &projectiles, z);
+                        break;
+                    }
                 }
             }
         }

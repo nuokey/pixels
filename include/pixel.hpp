@@ -19,7 +19,8 @@ class Pixel {
     sf::RectangleShape rect;
     
     Pixel(float x_, float y_, float red_, float green_, float blue_);
-    void update(Camera camera, std::vector<Pixel>* pixels, 
+    void virus();
+    void update(Camera camera, 
                 std::vector<Projectile>* projectiles, 
-                std::vector<Component>* components, int i);
+                std::vector<Component>* components, int x_, int y_);
 };
