@@ -104,8 +104,13 @@ int main()
                     if (std::fabs(pixels[x][y].x - projectiles[z].x) < (pixels[x][y].size + projectiles[z].size) / 2 && std::fabs(pixels[x][y].y - projectiles[z].y) < (pixels[x][y].size + projectiles[z].size) / 2) {
                         projectiles[z].hit(&pixels[x][y], &projectiles, z);
                         a = true;
-                        break;
+                        if (a) {
+                            break;
+                        }
                     }
+                }
+                if (a) {
+                    break;
                 }
             }
             if (a) {

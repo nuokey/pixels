@@ -23,8 +23,6 @@ void Agent::update(float dt, Camera camera, std::vector<Projectile>* projectiles
         else if (dy < 0) moveUp(dt);
     }
 
-    Player::update(dt, camera);
-
     if (projectiles) {
         shootTimer += dt;
         if (shootTimer >= shootCooldown) {

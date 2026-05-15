@@ -21,7 +21,7 @@ Pixel::Pixel(float x_, float y_, float red_, float green_, float blue_) {
 }
 
 void Pixel::virus(std::vector<std::vector<Pixel>>* pixels, int x_, int y_) {
-    if (randInt(1, 10) == 1) {
+    if (randInt(1, 100) == 1) {
         if (x_ < 99) {
             if ((*pixels)[x_+1][y_].green < 254) {
                 (*pixels)[x_+1][y_].red -= 1;

@@ -23,7 +23,11 @@ void Projectile::update(float dt, Camera camera) {
 }
 
 void Projectile::hit(Pixel* pixel, std::vector<Projectile>* projectiles, int z) {
-    if (pixel->green != 0 || pixel->red != 0) {
+    if (pixel->red == 0 && pixel->green != 0 && pixel->blue == 0) {
+        pixel->green -= damage;
+        projectiles->erase(projectiles->begin() + z);
+    }
+    else if (pixel->green != 0 || pixel->red != 0) {
         pixel->blue -= damage;
         projectiles->erase(projectiles->begin() + z);
     }
