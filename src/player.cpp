@@ -2,6 +2,7 @@
 #include "camera.hpp"
 #include "projectile.hpp"  // ← добавить для полного определения Projectile
 #include <cmath>
+#include "classes.h"
 
 Player::Player(float x, float y, float red, float green, float blue) : Pixel(x, y, red, green, blue) {
     moveSpeed = 0.1;
@@ -40,7 +41,7 @@ void Player::friction() {
 }
 
 void Player::collision(Pixel pixel) {
-    if (std::fabs(pixel.x - x) < (pixel.size + size) / 2 && std::fabs(pixel.y - y) < (pixel.size + size) / 2 && pixel.red != 0 && pixel.green != 0 && pixel.blue != 0) {
+    if (std::fabs(pixel.x - x) < (pixel.size + size) / 2 && std::fabs(pixel.y - y) < (pixel.size + size) / 2 && !(pixel.red == 0 && pixel.green == 0 && pixel.blue == 0)) {
         if (pixel.x - x > 0 && std::fabs(pixel.y - y) < std::fabs(pixel.x - x)) {
             x -= 1;
         }
@@ -52,6 +53,12 @@ void Player::collision(Pixel pixel) {
         }
         if (pixel.y - y > 0 && std::fabs(pixel.y - y) > std::fabs(pixel.x - x)) {
             y -= 1;
+        }
+        if (pixel.red == 0 && pixel.green != 0 && pixel.blue == 0) {
+            if (randInt(1, 100) == 1) {
+                green -= 1;
+            }
+            
         }
     }
 }

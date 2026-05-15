@@ -95,6 +95,7 @@ int main()
                 player.collision(pixels[x][y]);
             }
         }
+        bool a = false;
         for (int z = 0; z < projectiles.size(); z++) {
             projectiles[z].update(dt, gameManager.camera);
             window.draw(projectiles[z].rect);
@@ -102,9 +103,13 @@ int main()
                 for (int y = 0; y < pixels[x].size(); y++) {
                     if (std::fabs(pixels[x][y].x - projectiles[z].x) < (pixels[x][y].size + projectiles[z].size) / 2 && std::fabs(pixels[x][y].y - projectiles[z].y) < (pixels[x][y].size + projectiles[z].size) / 2) {
                         projectiles[z].hit(&pixels[x][y], &projectiles, z);
+                        a = true;
                         break;
                     }
                 }
+            }
+            if (a) {
+                break;
             }
         }
         for (int i = 0; i < components.size(); i++) {

@@ -23,34 +23,38 @@ Pixel::Pixel(float x_, float y_, float red_, float green_, float blue_) {
 void Pixel::virus(std::vector<std::vector<Pixel>>* pixels, int x_, int y_) {
     if (randInt(1, 10) == 1) {
         if (x_ < 99) {
-            if ((*pixels)[x_+1][y_].green < 254 && (*pixels)[x_+1][y_].red != 0 && (*pixels)[x_+1][y_].red != 0) {
+            if ((*pixels)[x_+1][y_].green < 254) {
                 (*pixels)[x_+1][y_].red -= 1;
                 (*pixels)[x_+1][y_].green += 1;
                 (*pixels)[x_+1][y_].blue -= 1;
+                std::cout << "fasdf" << std::endl;
             }
         }
         if (y_ < 99) {
-            if ((*pixels)[x_][y_+1].green < 254 && (*pixels)[x_][y_+1].red != 0 && (*pixels)[x_][y_+1].red != 0) {
+            if ((*pixels)[x_][y_+1].green < 254) {
                 (*pixels)[x_][y_+1].red -= 1;
                 (*pixels)[x_][y_+1].green += 1;
                 (*pixels)[x_][y_+1].blue -= 1;
+                std::cout << "fasdf" << std::endl;
             }
         }
         if (x_ > 0) {
-            if ((*pixels)[x_-1][y_].green < 254 && (*pixels)[x_-1][y_].red != 0 && (*pixels)[x_-1][y_].red != 0) {
+            if ((*pixels)[x_-1][y_].green < 254) {
                 (*pixels)[x_-1][y_].red -= 1;
                 (*pixels)[x_-1][y_].green += 1;
                 (*pixels)[x_-1][y_].blue -= 1;
+                std::cout << "fasdf" << std::endl;
             }
         }
         if (y_ > 0) {
-            if ((*pixels)[x_][y_-1].green < 254 && (*pixels)[x_][y_-1].red != 0 && (*pixels)[x_][y_-1].red != 0) {
+            if ((*pixels)[x_][y_-1].green < 254) {
                 (*pixels)[x_][y_-1].red -= 1;
                 (*pixels)[x_][y_-1].green += 1;
                 (*pixels)[x_][y_-1].blue -= 1;
+                std::cout << "fasdf" << std::endl;
             }
         }
-        std::cout << "fasdf" << std::endl;
+        
     }
     
     
