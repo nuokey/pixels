@@ -54,7 +54,7 @@ int main()
                     float mouseY = sf::Mouse::getPosition(window).y+gameManager.camera.y;
 
                     player.fire(&projectiles, mouseX, mouseY);
-                    std::cout << projectiles.size() << std::endl;
+                    // std::cout << projectiles.size() << std::endl;
                 }
             }
         }
@@ -90,7 +90,7 @@ int main()
 //        }
         for (int x = 0; x < pixels.size(); x++) {
             for (int y = 0; y < pixels[x].size(); y++) {
-                pixels[x][y].update(gameManager.camera, &projectiles, &components, x, y);
+                pixels[x][y].update(gameManager.camera, &pixels, &projectiles, &components, x, y);
                 window.draw(pixels[x][y].rect);
                 player.collision(pixels[x][y]);
             }

@@ -26,5 +26,8 @@ std::vector<std::vector<Pixel>> GameManager::worldGeneration(int worldSizeX, int
         }
         pixels_.push_back(pixelsRow);
     } 
+    pixels_[randInt(0, 99)][randInt(0, 99)].green = 255;
+    pixels_[randInt(0, 99)][randInt(0, 99)].red = 0;
+    pixels_[randInt(0, 99)][randInt(0, 99)].blue = 0;
     return pixels_;
 }
