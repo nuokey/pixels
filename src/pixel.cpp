@@ -27,7 +27,7 @@ void Pixel::virus(std::vector<std::vector<Pixel>>* pixels, int x_, int y_) {
                 (*pixels)[x_+1][y_].red -= 1;
                 (*pixels)[x_+1][y_].green += 1;
                 (*pixels)[x_+1][y_].blue -= 1;
-                std::cout << "fasdf" << std::endl;
+                // std::cout << "fasdf" << std::endl;
             }
         }
         if (y_ < 99) {
@@ -35,7 +35,7 @@ void Pixel::virus(std::vector<std::vector<Pixel>>* pixels, int x_, int y_) {
                 (*pixels)[x_][y_+1].red -= 1;
                 (*pixels)[x_][y_+1].green += 1;
                 (*pixels)[x_][y_+1].blue -= 1;
-                std::cout << "fasdf" << std::endl;
+                // std::cout << "fasdf" << std::endl;
             }
         }
         if (x_ > 0) {
@@ -43,7 +43,7 @@ void Pixel::virus(std::vector<std::vector<Pixel>>* pixels, int x_, int y_) {
                 (*pixels)[x_-1][y_].red -= 1;
                 (*pixels)[x_-1][y_].green += 1;
                 (*pixels)[x_-1][y_].blue -= 1;
-                std::cout << "fasdf" << std::endl;
+                // std::cout << "fasdf" << std::endl;
             }
         }
         if (y_ > 0) {
@@ -51,13 +51,11 @@ void Pixel::virus(std::vector<std::vector<Pixel>>* pixels, int x_, int y_) {
                 (*pixels)[x_][y_-1].red -= 1;
                 (*pixels)[x_][y_-1].green += 1;
                 (*pixels)[x_][y_-1].blue -= 1;
-                std::cout << "fasdf" << std::endl;
+                // std::cout << "fasdf" << std::endl;
             }
         }
         
     }
-    
-    
 }
 
 void Pixel::update(Camera camera, std::vector<std::vector<Pixel>>* pixels,
