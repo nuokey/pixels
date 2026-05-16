@@ -1,5 +1,8 @@
 #include "player.hpp"
 #include "camera.hpp"
+#include "projectile.hpp"  // ← добавить для полного определения Projectile
+#include <cmath>
+#include "classes.h"
 
 Player::Player(float x, float y, float red, float green, float blue) : Pixel(x, y, red, green, blue) {
     moveSpeed = 0.1;
@@ -7,6 +10,8 @@ Player::Player(float x, float y, float red, float green, float blue) : Pixel(x, 
     vx = 0;
     vy = 0;
     size = 40;
+    damage = 10;
+    
     rect.setSize(sf::Vector2f(size, size));
 }
 
@@ -37,7 +42,7 @@ void Player::friction() {
 }
 
 void Player::collision(Pixel pixel) {
-    if (std::fabs(pixel.x - x) < (pixel.size + size) / 2 && std::fabs(pixel.y - y) < (pixel.size + size) / 2) {
+    if (std::fabs(pixel.x - x) < (pixel.size + size) / 2 && std::fabs(pixel.y - y) < (pixel.size + size) / 2 && !(pixel.red == 0 && pixel.green == 0 && pixel.blue == 0)) {
         if (pixel.x - x > 0 && std::fabs(pixel.y - y) < std::fabs(pixel.x - x)) {
             x -= 1;
         }
@@ -50,6 +55,12 @@ void Player::collision(Pixel pixel) {
         if (pixel.y - y > 0 && std::fabs(pixel.y - y) > std::fabs(pixel.x - x)) {
             y -= 1;
         }
+        if (pixel.red == 0 && pixel.green != 0 && pixel.blue == 0) {
+            if (randInt(1, 100) == 1) {
+                green -= 1;
+            }
+            
+        }
     }
 }
 
@@ -61,7 +72,7 @@ void Player::fire(std::vector<Projectile>* projectiles_, float mouseX, float mou
     float ny = ry / r;
     float v = 1;
 
-    projectiles_->push_back(Projectile(x, y, nx * v, ny * v, sf::Color::Red));
+    projectiles_->push_back(Projectile(x+nx*30, y+ny*30, nx * v, ny * v, sf::Color::Red, damage));
     
     red -= 1;
 }
@@ -70,10 +81,16 @@ void Player::fire(std::vector<Projectile>* projectiles_, float mouseX, float mou
 // void Player::collision(int ) {
 
 // }
-void Player::update(float dt, Camera camera) {
+bool Player::update(float dt, Camera camera) {
     x += vx * dt;
     y += vy * dt;
     friction();
+
+    if (green <= 0) {
+        return false;
+    }
+
     rect.setFillColor(sf::Color(red, green, blue));
     rect.setPosition(sf::Vector2f(x-camera.x-size/2, y-camera.y-size/2));
+    return true;
 }

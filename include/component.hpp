@@ -1,8 +1,11 @@
 #pragma once
+
 #include <SFML/Graphics.hpp>
-#include "pixel.hpp"
-#include "player.hpp"
+#include "pixel.hpp"  // Полное определение Pixel (нужно для наследования)
 #include "camera.hpp"
+
+// Forward declaration
+class Player;
 
 class Component : public Pixel {
 private:

@@ -1,4 +1,6 @@
 #include "component.hpp"
+#include "player.hpp"  // ← добавить для полного определения Player
+#include <cmath>
 
 Component::Component(float x, float y, float vx_, float vy_, float red, float green, float blue) : Pixel(x, y, red, green, blue) {
     moveSpeed = 0.1;
@@ -6,6 +8,16 @@ Component::Component(float x, float y, float vx_, float vy_, float red, float gr
     vx = vx_;
     vy = vy_;
     size = 10;
+    if (red > 0) {
+        rect.setFillColor(sf::Color(255, 0, 0));
+    }
+    if (green > 0) {
+        rect.setFillColor(sf::Color(0, 255, 0));
+    }
+    if (blue > 0) {
+        rect.setFillColor(sf::Color(0, 0, 255));
+    }
+    
     rect.setSize(sf::Vector2f(size, size));
 }
 void Component::moveToPlayer(Player player) {
