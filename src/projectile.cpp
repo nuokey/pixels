@@ -1,5 +1,6 @@
 #include "projectile.hpp"
 #include "pixel.hpp"  // ← ДОБАВИТЬ - полное определение Pixel
+
 // #include "classes.h"
 
 Projectile::Projectile(float x_, float y_, float vx_, float vy_, sf::Color color_, float damage_) {
@@ -31,4 +32,8 @@ void Projectile::hit(Pixel* pixel, std::vector<Projectile>* projectiles, int z) 
         pixel->blue -= damage;
         projectiles->erase(projectiles->begin() + z);
     }
+}
+void Projectile::hit(Dynamite* dynamite, std::vector<Dynamite>* dynamiteVector, std::vector<Projectile>* projectiles, int z, int i) {
+        dynamite->explode(projectiles, dynamiteVector, i);
+        projectiles->erase(projectiles->begin() + z);
 }
