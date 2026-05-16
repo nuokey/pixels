@@ -10,6 +10,6 @@ private:
     float damage;
 public:
     Agent(float x, float y, Player* targetPlayer);
-    void update(float dt, Camera camera, std::vector<Projectile>* projectiles);
+    void update(float dt, Camera camera, std::vector<Projectile>* projectiles, Player* player);
     void shootAtTarget(std::vector<Projectile>* projectiles);
 };

@@ -7,11 +7,13 @@ Agent::Agent(float x, float y, Player* targetPlayer)
     : Player(x, y, 255, 0, 0)   
 {
     target = targetPlayer;
-    shootCooldown = 0.5f;       
+    shootCooldown = 3.0f;       
     shootTimer = 0.0f;
+    damage = 10;
 }
 
-void Agent::update(float dt, Camera camera, std::vector<Projectile>* projectiles) {
+void Agent::update(float dt, Camera camera, std::vector<Projectile>* projectiles, Player* target_) {
+    target = target_;
     if (target) {
         float dx = target->x - x;
         float dy = target->y - y;

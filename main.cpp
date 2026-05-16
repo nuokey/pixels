@@ -39,10 +39,14 @@ int main()
     std::vector<Particle> particles;
     std::vector<Agent> agents;
     std::vector<Dynamite> dynamite;
-    dynamite.push_back(Dynamite(1000, 1200));
+
+    
 
     pixels = gameManager.worldGeneration(100, 100, PixelSize);
     Player player{1000, 1000, static_cast<float>(randInt(50, 100)), static_cast<float>(randInt(50, 100)), static_cast<float>(randInt(50, 100))};
+
+    dynamite.push_back(Dynamite(1000, 1200));
+    agents.push_back(Agent(1200, 1200, &player));
     
     // text.setPosition(sf::Vector2f(camera.x, camera.y));
     
@@ -66,6 +70,8 @@ int main()
                     float mouseY = sf::Mouse::getPosition(window).y+gameManager.camera.y;
 
                     dynamite.push_back(Dynamite(mouseX, mouseY));
+                    player.red -= 32;
+                    player.blue -= 32;
                     // std::cout << projectiles.size() << std::endl;
                 }
             }
@@ -148,6 +154,11 @@ int main()
             dynamite[i].update(gameManager.camera, &dynamite, &projectiles, i);
             window.draw(dynamite[i].rect);
         }
+        for (int i = 0; i < agents.size(); i++) {
+            agents[i].update(dt, gameManager.camera, &projectiles);
+            window.draw(agents[i].rect);
+        }
+
         player.update(dt, gameManager.camera);
         gameManager.camera.x = player.x-WINDOW_WIDTH/2 + 500; // тут происходит какая-то дичь с камерой, надо будет доработать
         gameManager.camera.y = player.y-WINDOW_HEIGHT/2 + 400; // тут тоже
