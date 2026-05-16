@@ -51,8 +51,8 @@ int main()
     pixels = gameManager.worldGeneration(100, 100, PixelSize);
     Player player{1000, 1000, static_cast<float>(randInt(50, 100)), static_cast<float>(randInt(50, 100)), static_cast<float>(randInt(50, 100))};
 
-    dynamite.push_back(Dynamite(1000, 1200));
-    agents.push_back(Agent(1200, 1200, &player));
+    // dynamite.push_back(Dynamite(1000, 1200));
+    // agents.push_back(Agent(1200, 1200, &player));
     
     // text.setPosition(sf::Vector2f(camera.x, camera.y));
     
@@ -199,7 +199,15 @@ int main()
             }
             for (int i = 0; i < agents.size(); i++) {
                 agents[i].update(dt, gameManager.camera, &projectiles, &player);
+                if (std::sqrt((player.x - agents[i].x)*(player.x - agents[i].x) + (player.y - agents[i].y)*(player.y - agents[i].y)) > 1000) {
+                    agents.erase(agents.begin() + i);
+                    break;
+                }
                 window.draw(agents[i].rect);
+            }
+
+            if (randInt(1, 3000) == 1) {
+                agents.push_back(Agent(player.x+randInt(-700, 700), player.y+randInt(-700, 700), &player));
             }
 
             if (!player.update(dt, gameManager.camera)) {

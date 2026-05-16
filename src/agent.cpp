@@ -11,7 +11,7 @@ Agent::Agent(float x, float y, Player* targetPlayer)
     shootCooldown = 100.0f;       
     shootTimer = 0.0f;
     damage = 10;
-    a = 0.01;
+    a = 0.005;
     vx = 0;
     vy = 0;
     moveSpeed = 0.1;
