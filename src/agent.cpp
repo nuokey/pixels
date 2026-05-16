@@ -8,7 +8,7 @@ Agent::Agent(float x, float y, Player* targetPlayer)
     : Player(x, y, 255, 0, 0)   
 {
     target = targetPlayer;
-    shootCooldown = 1000.0f;       
+    shootCooldown = 100.0f;       
     shootTimer = 0.0f;
     damage = 10;
     a = 0.01;

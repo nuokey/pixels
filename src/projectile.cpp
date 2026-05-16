@@ -37,3 +37,7 @@ void Projectile::hit(Dynamite* dynamite, std::vector<Dynamite>* dynamiteVector, 
         dynamite->explode(projectiles, dynamiteVector, i);
         projectiles->erase(projectiles->begin() + z);
 }
+void Projectile::hit(Player* player, std::vector<Projectile>* projectiles, int z) {
+    player->green -= damage;
+    projectiles->erase(projectiles->begin() + z);
+}

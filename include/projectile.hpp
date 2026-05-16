@@ -4,6 +4,7 @@
 #include <vector>
 #include "camera.hpp"
 #include "dynamite.hpp"
+#include "player.hpp"
 
 // Forward declaration (достаточно для указателя)
 class Pixel;
@@ -23,4 +24,5 @@ class Projectile {
     void update(float dt, Camera camera);
     void hit(Pixel* pixel, std::vector<Projectile>* projectiles, int z);
     void hit(Dynamite* dynamite, std::vector<Dynamite>* dynamiteVector, std::vector<Projectile>* projectiles, int z, int i);
+    void hit(Player* player, std::vector<Projectile>* projectiles, int z);
 };

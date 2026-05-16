@@ -25,5 +25,5 @@ class Player: public Pixel {
     void friction();
     void collision(Pixel pixel);
     void fire(std::vector<Projectile>* projectiles, float mouseX, float mouseY);
-    void update(float dt, Camera camera);
+    bool update(float dt, Camera camera);
 };

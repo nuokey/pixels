@@ -72,7 +72,7 @@ void Player::fire(std::vector<Projectile>* projectiles_, float mouseX, float mou
     float ny = ry / r;
     float v = 1;
 
-    projectiles_->push_back(Projectile(x, y, nx * v, ny * v, sf::Color::Red, damage));
+    projectiles_->push_back(Projectile(x+nx*30, y+ny*30, nx * v, ny * v, sf::Color::Red, damage));
     
     red -= 1;
 }
@@ -81,10 +81,16 @@ void Player::fire(std::vector<Projectile>* projectiles_, float mouseX, float mou
 // void Player::collision(int ) {
 
 // }
-void Player::update(float dt, Camera camera) {
+bool Player::update(float dt, Camera camera) {
     x += vx * dt;
     y += vy * dt;
     friction();
+
+    if (green <= 0) {
+        return false;
+    }
+
     rect.setFillColor(sf::Color(red, green, blue));
     rect.setPosition(sf::Vector2f(x-camera.x-size/2, y-camera.y-size/2));
+    return true;
 }
