@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "camera.hpp"
+#include "dynamite.hpp"
 
 // Forward declaration (достаточно для указателя)
 class Pixel;
@@ -21,4 +22,5 @@ class Projectile {
     Projectile(float x_, float y_, float vx_, float vy_, sf::Color color_, float damage_);
     void update(float dt, Camera camera);
     void hit(Pixel* pixel, std::vector<Projectile>* projectiles, int z);
+    void hit(Dynamite* dynamite, std::vector<Dynamite>* dynamiteVector, std::vector<Projectile>* projectiles, int z, int i);
 };

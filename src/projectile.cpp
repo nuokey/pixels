@@ -1,5 +1,6 @@
 #include "projectile.hpp"
 #include "pixel.hpp"  // ← ДОБАВИТЬ - полное определение Pixel
+
 // #include "classes.h"
 
 Projectile::Projectile(float x_, float y_, float vx_, float vy_, sf::Color color_, float damage_) {
@@ -23,8 +24,16 @@ void Projectile::update(float dt, Camera camera) {
 }
 
 void Projectile::hit(Pixel* pixel, std::vector<Projectile>* projectiles, int z) {
-    if (pixel->green != 0 && pixel->red != 0) {
+    if (pixel->red == 0 && pixel->green != 0 && pixel->blue == 0) {
+        pixel->green -= damage;
+        projectiles->erase(projectiles->begin() + z);
+    }
+    else if (pixel->green != 0 || pixel->red != 0) {
         pixel->blue -= damage;
         projectiles->erase(projectiles->begin() + z);
     }
+}
+void Projectile::hit(Dynamite* dynamite, std::vector<Dynamite>* dynamiteVector, std::vector<Projectile>* projectiles, int z, int i) {
+        dynamite->explode(projectiles, dynamiteVector, i);
+        projectiles->erase(projectiles->begin() + z);
 }

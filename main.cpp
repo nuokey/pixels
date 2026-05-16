@@ -14,6 +14,8 @@
 #include "projectile.hpp"
 #include "particle.hpp"
 #include "gamemanager.hpp"
+#include "agent.hpp"
+#include "dynamite.hpp"
 
 
 int main()
@@ -35,6 +37,9 @@ int main()
     std::vector<Projectile> projectiles;
     std::vector<Component> components;
     std::vector<Particle> particles;
+    std::vector<Agent> agents;
+    std::vector<Dynamite> dynamite;
+    dynamite.push_back(Dynamite(1000, 1200));
 
     pixels = gameManager.worldGeneration(100, 100, PixelSize);
     Player player{1000, 1000, static_cast<float>(randInt(50, 100)), static_cast<float>(randInt(50, 100)), static_cast<float>(randInt(50, 100))};
@@ -56,6 +61,13 @@ int main()
                     player.fire(&projectiles, mouseX, mouseY);
                     // std::cout << projectiles.size() << std::endl;
                 }
+                if (mousePressed->button == sf::Mouse::Button::Right && player.red > 64) {
+                    float mouseX = sf::Mouse::getPosition(window).x+gameManager.camera.x;
+                    float mouseY = sf::Mouse::getPosition(window).y+gameManager.camera.y;
+
+                    dynamite.push_back(Dynamite(mouseX, mouseY));
+                    // std::cout << projectiles.size() << std::endl;
+                }
             }
         }
         float dt = clock.getElapsedTime().asMicroseconds();
@@ -75,19 +87,6 @@ int main()
         }
         window.clear();
         
-
-//        for (int i = 0; i < pixels.size(); i++) {
-//            pixels[i].update(gameManager.camera, &pixels, &projectiles, &components, i);
-//            window.draw(pixels[i].rect);
-//            player.collision(pixels[i]);
-//            for (int z = 0; z < pixels.size(); z++) {
-//                if (std::fabs(pixels[i].x - pixels[z].x) < (pixels[i].size + pixels[z].size) / 2 && std::fabs(pixels[i].y - pixels[z].y) < (pixels[i].size + pixels[z].size) / 2) {
-//                    if (pixels[i].green == 255) {
-//                        //std::cout << "fasdfsa" << std::endl;
-//                    }
-//                }
-//            }
-//        }
         for (int x = 0; x < pixels.size(); x++) {
             for (int y = 0; y < pixels[x].size(); y++) {
                 pixels[x][y].update(gameManager.camera, &pixels, &projectiles, &components, x, y);
@@ -95,16 +94,37 @@ int main()
                 player.collision(pixels[x][y]);
             }
         }
+        bool a = false;
         for (int z = 0; z < projectiles.size(); z++) {
             projectiles[z].update(dt, gameManager.camera);
             window.draw(projectiles[z].rect);
+
+            for (int i = 0; i < dynamite.size(); i++) {
+                if (std::fabs(dynamite[i].x - projectiles[z].x) < (dynamite[i].size + projectiles[z].size) / 2 && std::fabs(dynamite[i].y - projectiles[z].y) < (dynamite[i].size + projectiles[z].size) / 2) {
+                    projectiles[z].hit(&dynamite[i], &dynamite, &projectiles, z, i);
+                    a = true;
+                    if (a) {
+                        break;
+                    }
+                }
+            }
+
             for (int x = 0; x < pixels.size(); x++) {
                 for (int y = 0; y < pixels[x].size(); y++) {
                     if (std::fabs(pixels[x][y].x - projectiles[z].x) < (pixels[x][y].size + projectiles[z].size) / 2 && std::fabs(pixels[x][y].y - projectiles[z].y) < (pixels[x][y].size + projectiles[z].size) / 2) {
                         projectiles[z].hit(&pixels[x][y], &projectiles, z);
-                        break;
+                        a = true;
+                        if (a) {
+                            break;
+                        }
                     }
                 }
+                if (a) {
+                    break;
+                }
+            }
+            if (a) {
+                break;
             }
         }
         for (int i = 0; i < components.size(); i++) {
@@ -123,6 +143,10 @@ int main()
         for (int i = 0; i < particles.size(); i++) {
             particles[i].update(dt, gameManager.camera);
             window.draw(particles[i].rect);
+        }
+        for (int i = 0; i < dynamite.size(); i++) {
+            dynamite[i].update(gameManager.camera, &dynamite, &projectiles, i);
+            window.draw(dynamite[i].rect);
         }
         player.update(dt, gameManager.camera);
         gameManager.camera.x = player.x-WINDOW_WIDTH/2 + 500; // тут происходит какая-то дичь с камерой, надо будет доработать
