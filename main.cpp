@@ -98,41 +98,54 @@ int main()
                 pixels[x][y].update(gameManager.camera, &pixels, &projectiles, &components, x, y);
                 window.draw(pixels[x][y].rect);
                 player.collision(pixels[x][y]);
+                for (int i = 0; i < agents.size(); i++) {
+                    agents[i].collision(pixels[x][y]);
+                }
             }
         }
-        bool a = false;
-        for (int z = 0; z < projectiles.size(); z++) {
-            projectiles[z].update(dt, gameManager.camera);
-            window.draw(projectiles[z].rect);
-
-            for (int i = 0; i < dynamite.size(); i++) {
-                if (std::fabs(dynamite[i].x - projectiles[z].x) < (dynamite[i].size + projectiles[z].size) / 2 && std::fabs(dynamite[i].y - projectiles[z].y) < (dynamite[i].size + projectiles[z].size) / 2) {
-                    projectiles[z].hit(&dynamite[i], &dynamite, &projectiles, z, i);
-                    a = true;
-                    if (a) {
-                        break;
-                    }
+        // Обработка снарядов
+for (int z = projectiles.size() - 1; z >= 0; z--) {
+    projectiles[z].update(dt, gameManager.camera);
+    window.draw(projectiles[z].rect);
+    
+    bool hitDetected = false;  // Флаг, что снаряд уже попал
+    
+    // Проверка коллизии с dynamite
+    for (int i = dynamite.size() - 1; i >= 0; i--) {
+        if (std::fabs(dynamite[i].x - projectiles[z].x) < (dynamite[i].size + projectiles[z].size) / 2 && 
+            std::fabs(dynamite[i].y - projectiles[z].y) < (dynamite[i].size + projectiles[z].size) / 2) {
+            
+            projectiles[z].hit(&dynamite[i], &dynamite, &projectiles, z, i);
+            hitDetected = true;
+            break;  // Выходим из цикла dynamite
+        }
+    }
+    
+    // Проверка коллизии с pixels ТОЛЬКО если ещё не попали в dynamite
+    if (!hitDetected) {
+        for (int x = pixels.size() - 1; x >= 0; x--) {
+            if (hitDetected) break;  // Дополнительная проверка
+            
+            for (int y = pixels[x].size() - 1; y >= 0; y--) {
+                if (std::fabs(pixels[x][y].x - projectiles[z].x) < (pixels[x][y].size + projectiles[z].size) / 2 && 
+                    std::fabs(pixels[x][y].y - projectiles[z].y) < (pixels[x][y].size + projectiles[z].size) / 2) {
+                    
+                    projectiles[z].hit(&pixels[x][y], &projectiles, z);
+                    hitDetected = true;
+                    break;  // Выходим из внутреннего цикла
                 }
-            }
-
-            for (int x = 0; x < pixels.size(); x++) {
-                for (int y = 0; y < pixels[x].size(); y++) {
-                    if (std::fabs(pixels[x][y].x - projectiles[z].x) < (pixels[x][y].size + projectiles[z].size) / 2 && std::fabs(pixels[x][y].y - projectiles[z].y) < (pixels[x][y].size + projectiles[z].size) / 2) {
-                        projectiles[z].hit(&pixels[x][y], &projectiles, z);
-                        a = true;
-                        if (a) {
-                            break;
-                        }
-                    }
-                }
-                if (a) {
-                    break;
-                }
-            }
-            if (a) {
-                break;
             }
         }
+    }
+    
+    // Если снаряд должен быть удалён после попадания (у вас он удаляется в hit)
+    // НО! Так как hit уже удалил снаряд, не пытаемся удалить снова
+    // Просто проверяем, существует ли ещё этот снаряд
+    if (hitDetected && z < projectiles.size()) {
+        // Снаряд уже удалён в hit, ничего не делаем
+        // Но следующий снаряд будет с индексом z-1
+    }
+}
         for (int i = 0; i < components.size(); i++) {
             components[i].update(dt, gameManager.camera, player);
             window.draw(components[i].rect);
@@ -155,7 +168,7 @@ int main()
             window.draw(dynamite[i].rect);
         }
         for (int i = 0; i < agents.size(); i++) {
-            agents[i].update(dt, gameManager.camera, &projectiles);
+            agents[i].update(dt, gameManager.camera, &projectiles, &player);
             window.draw(agents[i].rect);
         }
 

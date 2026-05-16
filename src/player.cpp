@@ -11,6 +11,7 @@ Player::Player(float x, float y, float red, float green, float blue) : Pixel(x, 
     vy = 0;
     size = 40;
     damage = 10;
+    
     rect.setSize(sf::Vector2f(size, size));
 }
 
