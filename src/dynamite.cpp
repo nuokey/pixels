@@ -1,30 +1,30 @@
 #include "dynamite.hpp"
 #include "projectile.hpp"
-#include "pixel.hpp"
 #include <cmath>
 
-const float Dynamite::explosionSpeed = 2.0f;
-
-Dynamite::Dynamite(float x_, float y_, float vx_, float vy_, sf::Color color_, float damage_)
-    : Projectile(x_, y_, vx_, vy_, sf::Color(255, 165, 0), damage_)   
+Dynamite::Dynamite(float x, float y)
+    : Pixel(x, y, 255, 165, 0)   // оранжевый цвет (R=255, G=165, B=0)
 {
-    explosionDamage = damage_ * 0.6f;  
-    size = 12;                         
-    rect.setSize(sf::Vector2f(size, size));
-    rect.setFillColor(sf::Color(255, 165, 0));
+    // При необходимости можно задать отличный от стандартного размер
+    // size = 10; 
+    // rect.setSize(sf::Vector2f(size, size));
+    // rect.setFillColor(sf::Color(255, 165, 0));
 }
 
-void Dynamite::hit(Pixel* pixel, std::vector<Projectile>* projectiles, int index) {
-    
-    float angleStep = 2.0f * 3.14159f / explosionCount;
-    for (int i = 0; i < explosionCount; ++i) {
+void Dynamite::explode(std::vector<Projectile>* projectiles) {
+    const int numProjectiles = 12;      // количество осколков
+    const float speed = 2.0f;           // скорость разлёта
+    const float damage = 10.0f;         // урон каждого осколка
+
+    float angleStep = 2.0f * 3.14159265f / numProjectiles;
+    for (int i = 0; i < numProjectiles; ++i) {
         float angle = i * angleStep;
-        float vx_expl = std::cos(angle) * explosionSpeed;
-        float vy_expl = std::sin(angle) * explosionSpeed;
-        
-        Projectile shrapnel(x, y, vx_expl, vy_expl, sf::Color(255, 100, 0), explosionDamage);
-        projectiles->push_back(shrapnel);
+        float vx = std::cos(angle) * speed;
+        float vy = std::sin(angle) * speed;
+
+        // Снаряд оранжево-красного цвета, летит от центра динамита
+        projectiles->push_back(Projectile(x, y, vx, vy, sf::Color(255, 100, 0), damage));
     }
-    
-    projectiles->erase(projectiles->begin() + index);
+    // После взрыва динамит должен быть удалён из мира.
+    // Это нужно сделать в том месте, где вызывается explode().
 }
